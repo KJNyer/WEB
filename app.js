@@ -12,17 +12,19 @@ server.use(express.urlencoded({ extended: true }));
 
 server.use(express.static('public')); // sirve HTML, imágenes, CSS, todo
 
+
+//Datos de la conexion a sql
 const conexion = mysql.createConnection({
     host:'10.1.15.29',
     user:'alumno',
     password:'alumno',
     database:'Javier'
 });
-
+// Llamado del header y el footer
 const  cabecera =fs.readFileSync("public/header.html","utf8");
 const  final=fs.readFileSync("public/footer.html","utf8");
 
-
+//validacion de credenciales y error si falla
 server.post("/lol",(req,res)=>{
     const correo=req.body.correo;
     const clave=req.body.clave
@@ -50,6 +52,7 @@ server.post("/lol",(req,res)=>{
     }
 
 });
+//se trae la informacion de la base para mostrarla en una tabla 
 server.get ("/campeones",(req,res)=>{
     const informacion=conexion.query("select * from campeones",(error,data)=>{
         let fila=``;
@@ -91,7 +94,7 @@ server.get ("/campeones",(req,res)=>{
     });
 
 });
-
+//Metodo para editar campeones que trae loas datos y estos se pueden modificar 
 server.get("/editar_campeon",(req,res)=>{
     const id_recibido=req.query.id;
 
@@ -141,6 +144,8 @@ server.get("/editar_campeon",(req,res)=>{
     });
 
 });
+
+//Aqui se genera el update a los datos que ya estabn produciendo una actualizacion 
 server.post("/actualizar_campeones",(req,res)=>{
     const id_recibido=req.body.id;
     const nombre_recibido=req.body.nombre;
@@ -170,7 +175,7 @@ server.post("/actualizar_campeones",(req,res)=>{
     });
 
 });
-
+//Se muestra la tabla y en ella un hipervinculo para borrar la cual llama a la confirmacion 
 server.get("/eliminar_campeon",(req,res)=>{
     const id_recibido=req.query.id;
 
@@ -203,6 +208,8 @@ server.get("/eliminar_campeon",(req,res)=>{
 
 });
 
+
+//se confirma la eliminacion arrojando en pantalla una alerta 
 server.get("/confirmar_eliminacion",(req,res)=>{
     const id_recibido=req.query.id;
 
@@ -234,6 +241,8 @@ server.get("/confirmar_eliminacion",(req,res)=>{
     });
 
 });
+
+//Metodo para reunir los datos que van a ir para el nuevo campeon pero sin hacer la insercion 
 server.get("/nuevo_campeon",(req,res)=>{
 
             const contenido=`
@@ -268,7 +277,7 @@ server.get("/nuevo_campeon",(req,res)=>{
 
     });
 
-
+//insercion en la base de datos del nuevo campeon 
 server.post("/insertar_campeones",(req,res)=>{
     const nombre=req.body.nombre;
     const rol=req.body.rol;
