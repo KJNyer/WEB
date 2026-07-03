@@ -171,6 +171,70 @@ server.post("/actualizar_campeones",(req,res)=>{
 
 });
 
+server.get("/eliminar_campeon",(req,res)=>{
+    const id_recibido=req.query.id;
+
+    conexion.query("select * from campeones where id=?",[id_recibido],(error,data)=>{
+        if (error||data.length==0){
+            const contenido=`
+            <h1>no existe tal cosa</h1>
+            <br>
+            <img src=""images/lol1.png"><br><br>
+            <input type ="button" name="btn" value="regresar a la lista de campeones" onClick="location='/campeones';">
+            `;
+            res.send(cabecera+contenido+final);
+        }else{
+            const nombre_recibido =data[0].nombre;
+
+            const contenido=`
+                <h1>¿ESTAS SEGURO que desea eliminar el campeo:  ${nombre_recibido}?</h1>
+                <br>
+                <input type="button" name="btn1" value="si" onClick="location='/confirmar_eliminacion?id=${id_recibido}';">
+                &nbsp&nbsp&nbsp&nbsp&nbsp;
+                <input type="button" name="btn2" value="no" onClick="location='/campeones';">
+
+            `;
+            res.send(cabecera+contenido+final);
+
+
+        }
+
+    });
+
+});
+
+server.get("/confirmar_eliminacion",(req,res)=>{
+    const id_recibido=req.query.id;
+
+    conexion.query("delete from campeones where id=?",[id_recibido],(error,data)=>{
+        if (error||data.length==0){
+            const contenido=`
+            <h1>Error al eliminar el campeones </h1>
+            <br>
+            <img src="images/lol1.png"><br><br>
+            <input type ="button" name="btn" value="regresar a la lista de campeones" onClick="location='/campeones';">
+            `;
+            res.send(cabecera+contenido+final);
+        }else{
+
+            const contenido=`
+                <script>
+                        alert("campeones eliminado");\n
+                        location="/campeones";
+                
+                </script>
+                
+
+            `;
+            res.send(cabecera+contenido+final);
+
+
+        }
+
+    });
+
+});
+
 
 server.listen(3000, () => {
     console.log('Servidor iniciado en puerto 3000 (OK) ');
