@@ -148,7 +148,7 @@ server.post("/actualizar_campeones",(req,res)=>{
     const dificultad_recibido=req.body.dificultad;
 
     conexion.query("update campeones set nombre=?,rol=?,dificultad=? where id=?",[nombre_recibido,rol_recibido,dificultad_recibido,id_recibido],(error,data)=>{
-        if (error||data.length==0){
+        if (error||data.length==0 || dificultad_recibido<=10){
             const contenido=`
             <h1>error al actualizar</h1>
             <br>
