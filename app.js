@@ -234,6 +234,73 @@ server.get("/confirmar_eliminacion",(req,res)=>{
     });
 
 });
+server.get("/nuevo_campeon",(req,res)=>{
+
+            const contenido=`
+            <form name="insertara" action="/insertar_campeones" method="POST">
+
+                <table border="1" width="600">
+                    <tr>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>Nombre:</td><td><input type="text" name="nombre" value=""></td>
+                                </tr>
+                                <tr>
+                                    <td>Rol:</td><td><input type="text" name="rol" value=""></td>
+                                </tr>
+                                <tr>
+                                    <td>Dificultad:</td><td><input type="number" name="dificultad" value=""></td>
+                                </tr>
+                                <tr>
+                                    <td coldspan="2" align="center"><input type="submit" name="btn_insertar" value="Crear campeones"></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            `;
+            res.send(cabecera+contenido+final);
+
+
+     
+
+    });
+
+
+server.post("/insertar_campeones",(req,res)=>{
+    const nombre=req.body.nombre;
+    const rol=req.body.rol;
+    const dificultad=req.body.dificultad;
+
+    conexion.query("insert into campeones (nombre,rol,dificultad) values(?,?,?)",[nombre,rol,dificultad],(error,data)=>{
+        if (error||data.length==0){
+            const contenido=`
+            <h1>Error al insertar el campeon</h1>
+            <br>
+            <img src="images/lol1.png"><br><br>
+            <input type ="button" name="btn" value="regresar a la lista de campeones" onClick="location='/campeones';">
+            `;
+            res.send(cabecera+contenido+final);
+        }else{
+
+            const contenido=`
+            <script>
+                alert("Campeon insertado");\n
+                location="/campeones";
+            </script>
+                
+
+            `;
+            res.send(cabecera+contenido+final);
+
+
+        }
+
+    });
+
+});
 
 
 server.listen(3000, () => {
