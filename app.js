@@ -141,6 +141,35 @@ server.get("/editar_campeon",(req,res)=>{
     });
 
 });
+server.post("/actualizar_campeones",(req,res)=>{
+    const id_recibido=req.body.id;
+    const nombre_recibido=req.body.nombre;
+    const rol_recibido=req.body.rol;
+    const dificultad_recibido=req.body.dificultad;
+
+    conexion.query("update campeones set nombre=?,rol=?,dificultad=? where id=?",[nombre_recibido,rol_recibido,dificultad_recibido,id_recibido],(error,data)=>{
+        if (error||data.length==0){
+            const contenido=`
+            <h1>error al actualizar</h1>
+            <br>
+            <img src=""images/lol1.png"><br><br>
+            <input type ="button" name="btn" value="regresar a la lista de campeones" onClick="location='/campeones';">
+            `;
+            res.send(cabecera+contenido+final);
+        }
+        else{
+            const contenido =`
+            <script>
+                alert("Informacion actualizada");\n
+                location="/campeones";
+            </script>
+            `;
+            res.send(cabecera+contenido+final);
+        }
+
+    });
+
+});
 
 
 server.listen(3000, () => {
