@@ -50,7 +50,97 @@ server.post("/lol",(req,res)=>{
     }
 
 });
+server.get ("/campeones",(req,res)=>{
+    const informacion=conexion.query("select * from campeones",(error,data)=>{
+        let fila=``;
+        if (error)
+        {
+            fila=`
+            <tr>
+            <td colspan="5">NO HAY CAMPEONES DISPONIBLES</td>
+            </tr>
+            `;
+        }else{
+            for (const i of data){
+                fila+=`
+                <tr>
+                    <td>${i.id}</td><td>${i.nombre}</td><td>${i.rol}</td><td>${i.dificultad}</td><td><a href="/editar_campeon?id=${i.id}">EDITAR</a>&nbsp;<a href="/eliminar_campeon?id=${i.id}">BORRAR</a>&nbsp;</td>
+                </tr>
+                `;
+        }
+            }
+            const contenido=`
+                <table border="1" width="600">
+                    <tr>
+                        <td>
+                            <table width="100%">
+                                <tr>
+                                    <td>ID</td><td>Nombre</td><td>rol</td><td>dificultad</td><td>accion</td>
+                                </tr>
+                                ${fila}
+                            </table>
+                        </td>
+                    </tr>
+                    </table>
+                    <br>
+                    <input type="button" name="btn_nuevo" value="nuevocampeon" onClick="location='/nuevo_campeon'";>
+            `;
+            res.send(cabecera+contenido+final);
+       
 
+    });
+
+});
+
+server.get("/editar_campeon",(req,res)=>{
+    const id_recibido=req.query.id;
+
+    conexion.query("select * from campeones where id=?",[id_recibido],(error,data)=>{
+        if (error||data.length==0){
+            const contenido=`
+            <h1>no existe tal cosa</h1>
+            <br>
+            <img src="images/lol1.png"><br><br>
+            <input type ="button" name="btn" value="regresar a la lista de campeones" onClick="location='/campeones';">
+            `;
+            res.send(cabecera+contenido+final);
+        }else{
+            const nombre_recibido =data[0].nombre;
+            const rol_recibido=data[0].rol;
+            const dificultad_recibido=data[0].dificultad;
+            const contenido=`
+            <form name="editara" action="actualizar_campeones" method="POST">
+                <input type="hidden" name="id" value="${id_recibido}">
+                <table border="1" width="600">
+                    <tr>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>Nombre:</td><td><input type="text" name="nombre" value="${nombre_recibido}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Rol:</td><td><input type="text" name="rol" value="${rol_recibido}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Dificultad:</td><td><input type="number" name="dificultad" value="${dificultad_recibido}"></td>
+                                </tr>
+                                <tr>
+                                    <td coldspan="2" align="center"><input type="submit" name="btn_actualizar" value="Actualizar campeones"></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            `;
+            res.send(cabecera+contenido+final);
+
+
+        }
+
+    });
+
+});
 
 
 server.listen(3000, () => {
